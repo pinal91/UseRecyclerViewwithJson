@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ListView;
 import org.json.JSONArray;
@@ -15,7 +17,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView lv;
+  //  ListView lv;
+  RecyclerView mRVFishPrice;
     Json js;
     ArrayList<HashMap<String,String>>  data;
     @Override
@@ -23,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lv=(ListView)findViewById(R.id.lv);
+       /* lv=(ListView)findViewById(R.id.lv);*/
+
+        mRVFishPrice = (RecyclerView)findViewById(R.id.fishPriceList);
 
         data=new ArrayList<HashMap<String, String>>();
 
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("dataaaaaaa",s.toString());
 
-            Json js=new Json();
+           Json js=new Json();
 
             // Log.d("Async completed", "Done");
             // Log.d("database", "product comes" + s);
@@ -135,7 +140,11 @@ public class MainActivity extends AppCompatActivity {
             }
             Adapter an = new Adapter(MainActivity.this,data);
             Log.d("d", "d");
-            lv.setAdapter(an);
+           // lv.setAdapter(an);
+
+            mRVFishPrice.setAdapter(an);
+            mRVFishPrice.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
 
 
 

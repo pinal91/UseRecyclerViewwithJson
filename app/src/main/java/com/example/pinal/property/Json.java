@@ -1,5 +1,8 @@
 package com.example.pinal.property;
 
+/**
+ * Created by pinal on 16/5/16.
+ */
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -10,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by pinal on 16/5/16.
+ * Created by Pinal on 2/22/2016.
  */
 public class Json {
 

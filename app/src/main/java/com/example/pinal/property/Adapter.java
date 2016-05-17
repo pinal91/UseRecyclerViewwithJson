@@ -3,15 +3,15 @@ package com.example.pinal.property;
 /**
  * Created by pinal on 16/5/16.
  */
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -20,27 +20,31 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
-/**
- * Created by Pinal on 2/22/2016.
- */
-public class Adapter extends BaseAdapter {
+public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private Context context;
+    private LayoutInflater inflater;
+   /* List<DataFish> data= Collections.emptyList();
+    DataFish current;*/
+    int currentPos=0;
 
     ImageLoader imageLoader;
     DisplayImageOptions options;
 
-    Context context;
-    LayoutInflater layoutInflater;
     ArrayList<HashMap<String,String>> data;
 
     HashMap<String,String> result = new HashMap<String,String>();
 
-    public Adapter(Context context, ArrayList<HashMap<String,String>> list) {
 
-        this.context = context;
-        this.data = list;
-
+    // create constructor to innitilize context and data sent from MainActivity
+    public Adapter(Context context, ArrayList<HashMap<String,String>> list){
+        this.context=context;
+        inflater= LayoutInflater.from(context);
+        this.data=list;
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheOnDisc().cacheInMemory()
@@ -61,59 +65,84 @@ public class Adapter extends BaseAdapter {
                 .showImageOnFail(R.drawable.ic_launcher)
                 .build();
     }
+
+    // Inflate the layout when viewholder created
     @Override
-    public int getCount() {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view=inflater.inflate(R.layout.simple_list_disp, parent,false);
+        MyHolder holder=new MyHolder(view);
+        return holder;
+    }
+
+    // Bind data
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        MyHolder myHolder= (MyHolder) holder;
+        result=data.get(position);
+
+       myHolder.tv1.setText(result.get("name"));
+
+        myHolder. tv2.setText(result.get("country"));
+        myHolder.tv3.setText(result.get("type"));
+        myHolder.tv4.setText(result.get("bed"));
+
+        myHolder.tv5.setText(result.get("bath"));
+
+
+        if(result.get("rooms").isEmpty()){
+            myHolder.tv6.setVisibility(View.GONE);
+
+        }
+        else{
+            myHolder.tv6.setVisibility(View.VISIBLE);
+            myHolder.tv6.setText(result.get("rooms"));
+
+        }
+
+
+        if(result.get("area").isEmpty()){
+            myHolder.tv7.setVisibility(View.GONE);
+
+        }
+        else{
+            myHolder.tv7.setVisibility(View.VISIBLE);
+            myHolder.tv7.setText(result.get("area"));
+
+        }
+
+        imageLoader.displayImage(result.get("image"),myHolder.iv1, options);
+        imageLoader.displayImage(result.get("logo"),myHolder.iv2, options);
+
+    }
+
+    // return total item from List
+    @Override
+    public int getItemCount() {
         return data.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
+    class MyHolder extends RecyclerView.ViewHolder{
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
+        RecyclerView recyclerView;
         TextView tv1,tv2,tv3,tv4,tv5,tv6,tv7;
         ImageView iv1,iv2;
+        // create constructor to get widget reference
+        public MyHolder(View itemView) {
+            super(itemView);
+            tv1=(TextView) itemView.findViewById(R.id.tv1);
+            tv2=(TextView) itemView.findViewById(R.id.tv2);
+            tv3=(TextView)itemView.findViewById(R.id.tv3);
+            tv4=(TextView)itemView.findViewById(R.id.tv4);
+            tv5=(TextView)itemView.findViewById(R.id.tv5);
+            tv6=(TextView)itemView.findViewById(R.id.tv6);
+            tv7=(TextView)itemView.findViewById(R.id.tv7);
 
-        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            iv1=(ImageView)itemView.findViewById(R.id.iv1);
+            iv2=(ImageView)itemView.findViewById(R.id.iv2);
+        }
 
-        @SuppressLint("ViewHolder")
-        View view = layoutInflater.inflate(R.layout.simple_list_disp,parent,false);
-
-
-        tv1=(TextView) view.findViewById(R.id.tv1);
-        tv2=(TextView) view.findViewById(R.id.tv2);
-        tv3=(TextView)view.findViewById(R.id.tv3);
-        tv4=(TextView)view.findViewById(R.id.tv4);
-        tv5=(TextView)view.findViewById(R.id.tv5);
-        tv6=(TextView)view.findViewById(R.id.tv6);
-        tv7=(TextView)view.findViewById(R.id.tv7);
-
-        iv1=(ImageView)view.findViewById(R.id.iv1);
-        iv2=(ImageView)view.findViewById(R.id.iv2);
-
-
-        result = data.get(position);
-
-        tv1.setText(result.get("name"));
-        tv2.setText(result.get("area"));
-        tv3.setText(result.get("type"));
-        tv4.setText(result.get("bed"));
-
-        tv5.setText(result.get("bath"));
-        tv6.setText(result.get("rooms"));
-        tv7.setText(result.get("country"));
-
-        imageLoader.displayImage(result.get("image"),iv1, options);
-        imageLoader.displayImage(result.get("logo"),iv2, options);
-
-        return view;
     }
+
 }
